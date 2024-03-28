@@ -1,70 +1,116 @@
 package DataS_Lab6;
+import java.util.Collection;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.File;
+public interface Tree<E> extends Collection<E> {
+  /** Return true if the element is in the tree */
+  public boolean search(E e);
 
-public class DataS_Lab6 {
-    public static void main(String[] args) {
-        BST<Baby> baby = new BST<>();
-        String fileName = "Babies.txt";
+  /** Insert element e into the binary tree
+   * Return true if the element is inserted successfully */
+  public boolean insert(E e);
 
-        String projectDirectory = System.getProperty("user.dir");
+  /** Delete the specified element from the tree
+   * Return true if the element is deleted successfully */
+  public boolean delete(E e);
+  
+  /** Get the number of elements in the tree */
+  public int getSize();
 
-        String absoluteFilePath = projectDirectory + File.separator + fileName;
+  public Baby searchName(String name);
 
-        File file = new File(absoluteFilePath);
+  public Baby searchWeight(double weight);
+  
+  /** Inorder traversal from the root*/
+  public default void inorder() {
+  }
+  
+  public default Baby heavy(){
+      return heavy();
+  }
 
-        if (!(file.exists())) {
-            System.out.println("File does not exist.");
-        }
+  public default Baby least(){
+      return least();
+  }
+  public default int totalNodes(){
+    return totalNodes();
+  }
+  public default int twoChildren(){
+    return twoChildren();
+  }
+  public default void detailsDESC(){
+    
+  } 
 
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+  public default int countEven(){
+      return countEven();
+  }
 
-            String line;
-            int count = 0;
-            String[] temp;
-            String[] Id = new String[13];
-            String[] name = new String[13];
-            String[] weight = new String[13];
-            while ((line = reader.readLine()) != null) {
-                temp = line.split(" ");
+  /** Postorder traversal from the root */
+  public default void postorder() {
+  }
 
-                if (temp.length >= 4) {
-                    Id[count] = temp[0];
-                    
-                    StringBuilder nameBuilder = new StringBuilder();
-                    for (int i = 1; i < temp.length - 1; i++) {
-                        nameBuilder.append(temp[i]).append(" ");
-                    }
-                    name[count] = nameBuilder.toString().trim();
-                    weight[count] = temp[temp.length - 1];
-                    count++;
-                }
-            }
-            Baby baby1 = new Baby(Integer.parseInt(Id[0]), name[0], Double.parseDouble(weight[0]));
-            Baby baby2 = new Baby(Integer.parseInt(Id[1]), name[1], Double.parseDouble(weight[1]));
-            Baby baby3 = new Baby(Integer.parseInt(Id[2]), name[2], Double.parseDouble(weight[2]));
+  /** Preorder traversal from the root */
+  public default void preorder() {
+  }
+  
+  @Override /** Return true if the tree is empty */
+  public default boolean isEmpty() {
+    return this.size() == 0;
+  }
 
-            baby.insert(baby1);
-            baby.insert(baby2);
-            baby.insert(baby3);
+  @Override
+  public default boolean contains(Object e) {
+    return search((E)e);
+  }
+  
+  @Override
+  public default boolean add(E e) {
+    return insert(e);
+  }
+  
+  @Override
+  public default boolean remove(Object e) {
+    return delete((E)e);
+  }
+  
+  @Override
+  public default int size() {
+    return getSize();
+  }
+  
+  @Override
+  public default boolean containsAll(Collection<?> c) {
+    // Left as an exercise
+    return false;
+  }
 
-            System.out.println("The value of the heaviest baby is = " + baby.heavy().toString());
-            System.out.println("The value of the least heaviest baby is = " + baby.least().toString());
-            System.out.println("The baby name you are searching for is = " + baby.searchName(baby1.getName()).toString());
-            System.out.println("The baby weight you are searching for is = " + baby.searchWeight(baby2.getWeight()).toString());
+  @Override
+  public default boolean addAll(Collection<? extends E> c) {
+    // Left as an exercise
+    return false;
+  }
 
-            System.out.println("Number of babies with even weights = "+baby.countEven());
-            System.out.println("Number of total nodes in the tree = "+baby.totalNodes());
-            System.out.println("Number of roots with 2 children = "+baby.twoChildren());
-            baby.detailsDESC();
+  @Override
+  public default boolean removeAll(Collection<?> c) {
+    // Left as an exercise
+    return false;
+  }
 
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+  @Override
+  public default boolean retainAll(Collection<?> c) {
+    // Left as an exercise
+    return false;
+  }
+
+  @Override
+  public default Object[] toArray() {
+    // Left as an exercise
+    return null;
+  }
+
+  @Override
+  public default <T> T[] toArray(T[] array) {
+    // Left as an exercise
+    return null;
+  }
 }
