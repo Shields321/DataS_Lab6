@@ -19,6 +19,10 @@ public interface Tree<E> extends Collection<E> {
   /** Inorder traversal from the root*/
   public default void inorder() {
   }
+  
+  public default void heavy(){
+      
+  }
 
   /** Postorder traversal from the root */
   public default void postorder() {
@@ -89,5 +93,3 @@ public interface Tree<E> extends Collection<E> {
     return null;
   }
 }
-
-
