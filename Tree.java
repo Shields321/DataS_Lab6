@@ -15,13 +15,34 @@ public interface Tree<E> extends Collection<E> {
   
   /** Get the number of elements in the tree */
   public int getSize();
+
+  public Baby searchName(String name);
+
+  public Baby searchWeight(double weight);
   
   /** Inorder traversal from the root*/
   public default void inorder() {
   }
   
-  public default void heavy(){
-      
+  public default Baby heavy(){
+      return heavy();
+  }
+
+  public default Baby least(){
+      return least();
+  }
+  public default int totalNodes(){
+    return totalNodes();
+  }
+  public default int twoChildren(){
+    return twoChildren();
+  }
+  public default void detailsDESC(){
+    
+  } 
+
+  public default int countEven(){
+      return countEven();
   }
 
   /** Postorder traversal from the root */
