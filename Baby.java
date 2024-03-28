@@ -1,12 +1,12 @@
-
 package DataS_Lab6;
 
-public class Baby {
+public class Baby implements Comparable<Baby> {
     private int admissionNumber;
-    private String Name;
+    private String Name;    
     private Double Weight;
-    
-    public Baby(int admissionNumber, String Name, Double weight){
+
+    public Baby(int admissionNumber, String Name, Double weight) {
+
         this.admissionNumber = admissionNumber;
         this.Name = Name;
         this.Weight = weight;
@@ -34,5 +34,14 @@ public class Baby {
 
     public void setWeight(Double Weight) {
         this.Weight = Weight;
+    }
+    @Override
+    public String toString() {
+        return "Admission Number: " + admissionNumber + ", Name: " + Name + ", Weight: " + Weight;
+    }
+
+    @Override
+    public int compareTo(Baby o) {
+        return Double.compare(this.Weight, o.Weight);
     }
 }
