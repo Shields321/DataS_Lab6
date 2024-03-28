@@ -1,10 +1,6 @@
 package DataS_Lab6;
-import DataS_Lab6.Tree;
 
-/**
- *
- * @author dylan
- */
+import DataS_Lab6.Tree;
 
 public class BST<E extends Baby> implements Tree<E> {
 
@@ -12,147 +8,139 @@ public class BST<E extends Baby> implements Tree<E> {
     protected int size = 0;
     protected java.util.Comparator<E> c;
 
-    //add other functions here 
-    // NONE OF THIS IS TESTED YET
     @Override
-    public void heavy() {
-        heavy(root);
+    public Baby heavy() { //Finds the most heavy baby. 
+        double heavy = heavyHelper(root, 0.0);
+        return searchWeight(heavy);
     }
 
-    public void heavy(TreeNode<E> root) {
-        if (root == null) {
-            return;
-        }
-        TreeNode<E> current = root;
-        double maxRight = current.element.getWeight();
-        double maxLeft = current.element.getWeight();
+    public double heavyHelper(TreeNode<E> root, Double max) { //Helper to find the heavy baby. 
+        if (root == null)
+            return 0;
 
-        if (current.element != null) {
-            if ((current.right != null) && current.element.getWeight() > current.right.element.getWeight()) {
-                maxRight = current.element.getWeight();
+        double currentWeight = root.element.getWeight(); //get the current weight of the baby. 
 
-            }
-            if (current.right != null) {
-                heavy(current.right);
-            }
-            if ((current.left != null) && current.element.getWeight() > current.left.element.getWeight()) {
-                maxLeft = current.element.getWeight();
-            }
-            if (current.left != null) {
-                heavy(current.left);
-            }
+        if (max == null || currentWeight > max) { //compares the current weight to the previous max weight 
+            max = currentWeight;
         }
 
-        if (maxRight == maxLeft) {
-            System.out.println(maxRight);
-        } else if (maxRight > maxLeft) {
-            System.out.println(maxRight);
-        } else {
-            System.out.println(maxLeft);
-        }
+        double maxRight = heavyHelper(root.right, max); //looks on the right side to get the max weight. 
+        double maxLeft = heavyHelper(root.left, max); //looks on the left side to get the max weight. 
+        if (currentWeight < maxRight || currentWeight < maxLeft) { //finds the max weight. 
+            if (maxRight > maxLeft) {
+                max = maxRight;
+            } else if (maxLeft > maxRight) {
+                max = maxLeft;
+            }
+        } else
+            max = currentWeight;
+
+        return max;
     }
 
-    public void least(TreeNode<E> root) {
-        if (root == null) {
-            return;
-        }
-        TreeNode<E> current = root;
-        double minRight = current.element.getWeight();
-        double minLeft = current.element.getWeight();
-
-        if (current.element != null) {
-            if (current.element.getWeight() < current.right.element.getWeight()) {
-                minRight = current.element.getWeight();
-            }
-            least(current.right);
-            if (current.element.getWeight() < current.left.element.getWeight()) {
-                minLeft = current.element.getWeight();
-            }
-            least(current.left);
-        }
-        if (minRight == minLeft) {
-            System.out.println(minRight);
-        } else if (minRight < minLeft) {
-            System.out.println(minRight);
-        } else {
-            System.out.println(minLeft);
-        }
+    @Override
+    public Baby least() { //finding the baby with teh least weight. 
+        double weight = leastHelper(root, 0.0);
+        return searchWeight(weight);
     }
 
-    //This is still needed to be done but this just displays the babies in the descending order. 
+    public double leastHelper(TreeNode<E> root, Double min) { //helper to find the baby with the least weight. 
+
+        if (root == null) 
+            return Double.MAX_VALUE;
+
+        double currentWeight = root.element.getWeight(); //get the current weight of the baby.
+
+        if (min == null || currentWeight < min) { //compares the previous min weight to the current weight. 
+            min = currentWeight;
+        }
+
+        double maxRight = leastHelper(root.right, min); //look for the min on the left. 
+        double maxLeft = leastHelper(root.left, min); //look for the min on the right. 
+        return Math.min(currentWeight, Math.min(maxRight, maxLeft)); //return the minimum value. 
+
+    }
+
+    // descending order of the baby weights.
+    @Override
     public void detailsDESC() {
-
+        detailsDESCHealper(root);
     }
 
-    //Counts the number of even numbers in the tree. 
-    public int countEven(TreeNode<E> root) {
+    public void detailsDESCHealper(TreeNode<E> root) { //helper for the descending order. 
+        if (root != null) {
+            detailsDESCHealper(root.right); //get the details of the elements on the right side of the tree. 
+            System.out.println("Name: " + root.element.getName() + ", Weight: " + root.element.getWeight());
+            detailsDESCHealper(root.left); //get the details of the elements on the left side of the tree. 
+        }
+    }
+
+    // Counts the number of even numbers in the tree.
+    @Override
+    public int countEven() {
+        return countEvenHelper(root);
+    }
+
+    public int countEvenHelper(TreeNode<E> root) {
         if (root == null) {
-            return 0;
+            return 0; //check if tree is null
         }
-        return countEvenHelper(root, 0);
 
+        int evenCount = 0; 
+
+        if (root.element.getWeight() % 2 == 0) { //check to see if the weight is even. 
+            evenCount++;
+        }
+
+        int evenCountRight = countEvenHelper(root.right); //look for even weights on the right. 
+
+        int evenCountLeft = countEvenHelper(root.left); //look for even weights on the left. 
+        
+        return evenCount + evenCountRight + evenCountLeft; //add the even counts of the left and right. 
     }
 
-    public int countEvenHelper(TreeNode<E> root, int count) {
-        TreeNode<E> current = root;
-        int evenCount = count;
-
-        if (current.element != null) {
-            if (current.right.element.getWeight() % 2 == 0) {
-                evenCount++;
-            }
-            countEvenHelper(current.right, 0);
-            if (current.left.element.getWeight() % 2 == 0) {
-                evenCount++;
-            }
-            countEvenHelper(current.left, 0);
-        }
-        return evenCount;
-    }
-
-    //Counts the total number of nodes in teh tree. 
-    public int totalNodes(TreeNode<E> root) {
-        if (root == null) {
-            return 0;
-        }
+    // Counts the total number of nodes in the tree.
+    @Override
+    public int totalNodes() {
         return totalNodesHelper(root, 1);
     }
 
-    public int totalNodesHelper(TreeNode<E> root, int total) {
-        TreeNode<E> current = root;
-        int totalCount = total;
-        if (current.element != null) {
-            if (current.right.element != null) {
-                totalCount++;
-            }
-            totalNodesHelper(current.right, totalCount);
-            if (current.left.element != null) {
-                totalCount++;
-            }
-            totalNodesHelper(current.left, totalCount);
-        }
-
-        return totalCount;
-    }
-
-    //This fucntion is to count every node in the tree that has two children. 
-    public int twoChildren(TreeNode<E> root) {
+    public int totalNodesHelper(TreeNode<E> root, int count) {
         if (root == null) {
-            return 0;
+            return 0; //check if tree is empty. 
         }
-        return countEvenHelper(root, 0);
+        int nodeCount = count;
+
+        int nodeCountRight = totalNodesHelper(root.right, nodeCount); //count the nodes on the right. 
+
+        int nodeCountLeft = totalNodesHelper(root.left, nodeCount); //count the nodes of the left. 
+
+        
+        nodeCount += nodeCountRight + nodeCountLeft; //add the left and right side together. 
+
+        return nodeCount;
     }
 
-    public int twoChildrenHelper(TreeNode<E> root, int two) {
-        TreeNode<E> current = root;
-        int twoChild = two;
+    // This fucntion is to count every node in the tree that has two children.
+    @Override
+    public int twoChildren() {
+        return twoChildrenHelper(root, 0);
+    }
 
-        if (current.element != null) {
-            if (current.right != null && current.left != null) {
+    public int twoChildrenHelper(TreeNode<E> root, int two) { // Helper function to find nodes with two children.
+        if (root == null) {
+            return 0; // returns when the tree is empty
+        }
+
+        TreeNode<E> current = root;
+        int twoChild = two; // keeping track of the nodes withtwo children.
+
+        if (current.element != null) { // checks if the current element is null.
+            if (current.right != null && current.left != null) { //runs when there is a left and right child. 
                 twoChild++;
             }
-            countEvenHelper(current.right, 0);
-            countEvenHelper(current.left, 0);
+            twoChildrenHelper(current.right, twoChild); //call to look at the right side.
+            twoChildrenHelper(current.left, twoChild); //call to look at the left side. 
         }
         return twoChild;
     }
@@ -200,6 +188,71 @@ public class BST<E extends Baby> implements Tree<E> {
         }
 
         return false;
+    }
+
+    @Override
+    public Baby searchName(String name) { // Finds the baby based on the name.
+        return searchNameHelper(root, name);
+    }
+
+    public Baby searchNameHelper(TreeNode<E> root, String name) { // This is a helper funciton to find the baby with
+                                                                  // that name.
+        if (root == null || root.element == null) { // runs when the root or element is null.
+            return null;
+        }
+
+        String currentName = root.element.getName(); // get the name of the current element.
+
+        if (currentName.equals(name)) { // When the name is equal to the current name.
+            return root.element;
+        }
+
+        Baby resultFromRight = searchNameHelper(root.right, name); // runs to find the name on the right side.
+
+        if (resultFromRight != null) { // runs when name is on the right side of the tree
+            return resultFromRight;
+        }
+
+        Baby resultFromLeft = searchNameHelper(root.left, name); // runs to find the name on the left side.
+
+        if (resultFromLeft != null) { // runs when the name is on the left side of the tree.
+            return resultFromLeft;
+        }
+
+        return null;
+    }
+
+    @Override
+    public Baby searchWeight(double weight) { // Finds the baby based on the weight of the baby.
+        return searchWeightHelper(root, weight);
+    }
+
+    public Baby searchWeightHelper(TreeNode<E> root, double weight) { // This is a helper funciton to find the baby
+                                                                      // based on the weight of the baby.
+        if (root == null || root.element == null) { // runs when the root or element is null.
+            return null;
+        }
+
+        double currentWeight = root.element.getWeight(); // get the weight of the current element.
+
+        if (currentWeight == weight) { // When the weight is equal to the current weight.
+            return root.element;
+        }
+
+        Baby resultFromRight = searchWeightHelper(root.right, weight); // Searches on the right for that baby weight.
+
+        if (resultFromRight != null) { // return if the baby is on the right.
+            return resultFromRight;
+        }
+
+        Baby resultFromLeft = searchWeightHelper(root.left, weight); // Seraches the left for the baby based on the
+                                                                     // weight.
+
+        if (resultFromLeft != null) { // return if the baby with that weight is on that left side.
+            return resultFromLeft;
+        }
+
+        return null;
     }
 
     @Override
@@ -335,8 +388,7 @@ public class BST<E extends Baby> implements Tree<E> {
      * Returns a path from the root leading to the specified element
      */
     public java.util.ArrayList<TreeNode<E>> path(E e) {
-        java.util.ArrayList<TreeNode<E>> list
-                = new java.util.ArrayList<>();
+        java.util.ArrayList<TreeNode<E>> list = new java.util.ArrayList<>();
         TreeNode<E> current = root; // Start from the root
 
         while (current != null) {
@@ -429,8 +481,7 @@ public class BST<E extends Baby> implements Tree<E> {
     private class InorderIterator implements java.util.Iterator<E> {
         // Store the elements in a list
 
-        private java.util.ArrayList<E> list
-                = new java.util.ArrayList<>();
+        private java.util.ArrayList<E> list = new java.util.ArrayList<>();
         private int current = 0; // Point to the current element in list
 
         public InorderIterator() {
@@ -498,6 +549,3 @@ public class BST<E extends Baby> implements Tree<E> {
         size = 0;
     }
 }
-
-
-
